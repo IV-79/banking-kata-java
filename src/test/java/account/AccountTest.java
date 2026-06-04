@@ -202,10 +202,13 @@ public class AccountTest {
         assertEquals(Double.valueOf(100.00),account.getBalance());
 
         Account desintation = new Account();
+        assertEquals(Double.valueOf(0.00),desintation.getBalance());
+
         IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
             account.transfer(desintation, 100)
         );
         assertEquals("Account is locked", exception.getMessage());
         assertEquals(Double.valueOf(100.00),account.getBalance());
+        assertEquals(Double.valueOf(0.00),desintation.getBalance());
     }
 }
