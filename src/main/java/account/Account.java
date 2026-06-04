@@ -24,6 +24,7 @@ public class Account {
     private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
     private Double balance = INITIAL_BALANCE;
     private List<Transaction> transactions = new ArrayList<Transaction>();
+    private boolean locked = false;
 
     public Account() {
         this.id = ID_COUNT.incrementAndGet();
@@ -36,6 +37,10 @@ public class Account {
     }
 
     public void credit(Double value, Date date) {
+        if(locked){
+            throw new IllegalStateException("Account is locked");
+        }
+
         if(value == null || value <= 0) {
             throw new IllegalArgumentException("Value cannot be null or negative");
         }
@@ -44,6 +49,10 @@ public class Account {
     }
 
     public void debit(Double value, Date date) {
+        if(locked){
+            throw new IllegalStateException("Account is locked");
+        }
+
         doTransaction(value, date, BankOperation.DEBIT);
     }
 
@@ -55,6 +64,9 @@ public class Account {
     }
 
     public void transfer(Account destination, int amount) {
+        if(locked){
+            throw new IllegalStateException("Account is locked");
+        }
         if(amount <= 0) {
             throw new IllegalArgumentException("Amount cannot be 0 or negative");
         }
@@ -74,10 +86,18 @@ public class Account {
     // with specific time
 
     public void credit(Double value, Date date, String time, String destination, String comment) {
+        if(locked){
+            throw new IllegalStateException("Account is locked");
+        }
+
         doTransaction(value, date, time, BankOperation.CREDIT, destination, comment);
     }
 
     public void debit(Double value, Date date, String time, String destination, String comment) {
+        if(locked){
+            throw new IllegalStateException("Account is locked");
+        }
+
         doTransaction(value, date, time, BankOperation.DEBIT, destination, comment);
     }
 
@@ -191,5 +211,13 @@ public class Account {
 
     public List<Transaction> getTransactions(){
         return new ArrayList<>(transactions);
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 }
