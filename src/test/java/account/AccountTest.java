@@ -89,4 +89,33 @@ public class AccountTest {
         assertEquals("Value cannot be null or negative", exception.getMessage());
     }
 
+    @Test
+    public void should_transfer(){
+        Account account = new Account();
+        Account destination = new Account();
+        assertEquals(0, account.getBalance(), 0);
+        assertEquals(0, destination.getBalance(), 0);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+            account.transfer(destination,100)
+        );
+        assertEquals("Balance cannot be less than amount", exception.getMessage());
+
+        account.credit(1000.00, dateNow);
+        assertEquals("The balance should be 1000 ", 1000.0, account.getBalance(), 0);
+
+        exception = assertThrows(IllegalArgumentException.class, () ->
+            account.transfer(null,100)
+        );
+        assertEquals("Destination cannot be null", exception.getMessage());
+
+        exception = assertThrows(IllegalArgumentException.class, () ->
+            account.transfer(destination,0)
+        );
+        assertEquals("Amount cannot be 0 or negative", exception.getMessage());
+
+        account.transfer(destination,100);
+        assertEquals("The balance should be 900 ", 900.0, account.getBalance(), 0);
+        assertEquals("The Destination balance should be 100 ", 100.0, destination.getBalance(), 0);
+    }
 }
