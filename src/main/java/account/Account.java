@@ -188,4 +188,8 @@ public class Account {
         }
 
     }
+
+    public List<Transaction> getTransactions(){
+        return new ArrayList<>(transactions);
+    }
 }
