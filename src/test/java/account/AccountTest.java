@@ -165,4 +165,47 @@ public class AccountTest {
         assertEquals(Double.valueOf(50.00), transactions.get(2).getValue());
 
     }
+
+    @Test
+    public void should_locked_credit(){
+        Account account = new Account();
+        account.credit(100.00, dateNow);
+        account.setLocked(true);
+        assertEquals(Double.valueOf(100.00),account.getBalance());
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+            account.credit(100.00,dateNow)
+        );
+        assertEquals("Account is locked", exception.getMessage());
+        assertEquals(Double.valueOf(100.00),account.getBalance());
+    }
+
+    @Test
+    public void should_locked_debit(){
+        Account account = new Account();
+        account.credit(100.00, dateNow);
+        account.setLocked(true);
+        assertEquals(Double.valueOf(100.00),account.getBalance());
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+            account.debit(100.00,dateNow)
+        );
+        assertEquals("Account is locked", exception.getMessage());
+        assertEquals(Double.valueOf(100.00),account.getBalance());
+    }
+
+    @Test
+    public void should_locked_transfer(){
+        Account account = new Account();
+        account.credit(100.00, dateNow);
+        account.setLocked(true);
+        assertEquals(Double.valueOf(100.00),account.getBalance());
+
+        Account desintation = new Account();
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+            account.transfer(desintation, 100)
+        );
+        assertEquals("Account is locked", exception.getMessage());
+        assertEquals(Double.valueOf(100.00),account.getBalance());
+    }
 }
