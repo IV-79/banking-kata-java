@@ -10,14 +10,19 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 /**
  * @author Tuan Hiep TRAN
  */
 public class AccountTest {
+
+
+    Date dateNow = new Date();
 
     @Test
     public void should_return_the_balance_1000_because_i_credit_1000() throws ParseException {
@@ -57,5 +62,32 @@ public class AccountTest {
         System.out.println(printed.trim());
     }
 
+    @Test
+    public void should_credit() {
+        Account account = new Account();
+        assertEquals(0, account.getBalance(), 0);
+        account.credit(1000.00,dateNow);
+        assertEquals("The balance should be 1000 ", 1000.0, account.getBalance(), 0);
+    }
+
+    @Test
+    public void should_credit_exception() {
+        Account account = new Account();
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            account.credit(null, dateNow);
+        });
+        assertEquals("Value cannot be null or negative", exception.getMessage());
+
+        exception = assertThrows(IllegalArgumentException.class, () -> {
+            account.credit(0.00, dateNow);
+        });
+        assertEquals("Value cannot be null or negative", exception.getMessage());
+
+        exception = assertThrows(IllegalArgumentException.class, () -> {
+            account.credit(-1000.00, dateNow);
+        });
+        assertEquals("Value cannot be null or negative", exception.getMessage());
+    }
 
 }
