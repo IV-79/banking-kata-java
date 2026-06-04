@@ -74,19 +74,18 @@ public class AccountTest {
     public void should_credit_exception() {
         Account account = new Account();
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            account.credit(null, dateNow);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+            account.credit(null, dateNow)
+        );
         assertEquals("Value cannot be null or negative", exception.getMessage());
 
-        exception = assertThrows(IllegalArgumentException.class, () -> {
-            account.credit(0.00, dateNow);
-        });
+        exception = assertThrows(IllegalArgumentException.class, () ->
+            account.credit(0.00, dateNow)
+        );
         assertEquals("Value cannot be null or negative", exception.getMessage());
 
-        exception = assertThrows(IllegalArgumentException.class, () -> {
-            account.credit(-1000.00, dateNow);
-        });
+        exception = assertThrows(IllegalArgumentException.class, () -> account.credit(-1000.00, dateNow)
+        );
         assertEquals("Value cannot be null or negative", exception.getMessage());
     }
 
