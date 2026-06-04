@@ -36,6 +36,10 @@ public class Account {
     }
 
     public void credit(Double value, Date date) {
+        if(value == null || value <= 0) {
+            throw new IllegalArgumentException("Value cannot be null or negative");
+        }
+
         doTransaction(value, date, BankOperation.CREDIT);
     }
 
