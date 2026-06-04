@@ -1,6 +1,7 @@
 package account;
 
 import org.junit.Test;
+import service.BankOperation;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,16 +12,15 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 
 /**
  * @author Tuan Hiep TRAN
  */
 public class AccountTest {
-
 
     Date dateNow = new Date();
 
@@ -117,5 +117,52 @@ public class AccountTest {
         account.transfer(destination,100);
         assertEquals("The balance should be 900 ", 900.0, account.getBalance(), 0);
         assertEquals("The Destination balance should be 100 ", 100.0, destination.getBalance(), 0);
+    }
+
+    @Test
+    public void should_keep_transaction_history_when_crediting_account()  {
+        Account account = new Account();
+        account.credit(100.00, dateNow);
+        account.credit(150.00, dateNow);
+
+        List<Transaction> transactions = account.getTransactions();
+        assertEquals(2, transactions.size());
+        assertEquals(BankOperation.CREDIT, transactions.get(0).getTypeOperation());
+        assertEquals(Double.valueOf(100.00), transactions.get(0).getValue());
+        assertEquals(BankOperation.CREDIT, transactions.get(1).getTypeOperation());
+        assertEquals(Double.valueOf(150.00), transactions.get(1).getValue());
+
+    }
+
+    @Test
+    public void should_keep_transaction_history_when_debiting_account(){
+        Account account = new Account();
+        account.credit(150.00, dateNow);
+        account.debit(100.00, dateNow);
+
+        List<Transaction> transactions = account.getTransactions();
+        assertEquals(2, transactions.size());
+        assertEquals(BankOperation.CREDIT, transactions.get(0).getTypeOperation());
+        assertEquals(Double.valueOf(150.00), transactions.get(0).getValue());
+        assertEquals(BankOperation.DEBIT, transactions.get(1).getTypeOperation());
+        assertEquals(Double.valueOf(100.00), transactions.get(1).getValue());
+    }
+
+    @Test
+    public void should_keep_transaction_history_in_operation_order(){
+        Account account = new Account();
+        account.credit(150.00, dateNow);
+        account.debit(100.00, dateNow);
+        account.credit(50.00, dateNow);
+
+        List<Transaction> transactions = account.getTransactions();
+        assertEquals(3, transactions.size());
+        assertEquals(BankOperation.CREDIT, transactions.get(0).getTypeOperation());
+        assertEquals(Double.valueOf(150.00), transactions.get(0).getValue());
+        assertEquals(BankOperation.DEBIT, transactions.get(1).getTypeOperation());
+        assertEquals(Double.valueOf(100.00), transactions.get(1).getValue());
+        assertEquals(BankOperation.CREDIT, transactions.get(2).getTypeOperation());
+        assertEquals(Double.valueOf(50.00), transactions.get(2).getValue());
+
     }
 }
