@@ -54,6 +54,22 @@ public class Account {
         balance = transaction.getNextBalance();
     }
 
+    public void transfer(Account destination, int amount) {
+        if(amount <= 0) {
+            throw new IllegalArgumentException("Amount cannot be 0 or negative");
+        }
+        if(getBalance() < amount) {
+            throw new IllegalArgumentException("Balance cannot be less than amount");
+        }
+        if(destination == null) {
+            throw new IllegalArgumentException("Destination cannot be null");
+        }
+
+        Date currentDate = new Date();
+        debit((double) amount,currentDate);
+        destination.credit((double) amount,currentDate);
+
+    }
 
     // with specific time
 
